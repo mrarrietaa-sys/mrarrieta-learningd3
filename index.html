@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>For or Since Flashcards (B1)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    color-scheme: light;
+    --ink:        #111111;
+    --ink-soft:   #3A3A3A;
+    --gray:       #6E6E6E;
+    --gray-soft:  #E4E4E4;
+    --white:      #FFFFFF;
+    --r-lg: 26px;
+    --r-md: 16px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; }
+  }
+
+  html,body{ height:100%; }
+
+  body{
+    font-family:'Inter', sans-serif;
+    background:var(--white);
+    color:var(--ink);
+    min-height:100vh;
+    padding:36px 18px;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  .bg-blob{ position:fixed; border-radius:50%; filter:blur(60px); z-index:0; opacity:0.6; }
+  .bg-blob.b1{ width:360px; height:360px; background:var(--gray-soft); top:-140px; right:-120px; }
+  .bg-blob.b2{ width:320px; height:320px; background:var(--gray-soft); bottom:-140px; left:-120px; }
+
+  .stage{ max-width:620px; margin:0 auto; position:relative; z-index:1; }
+
+  /* ---------- Persistent header ---------- */
+  .header-row{ display:flex; align-items:center; gap:10px; margin-bottom:26px; }
+  .m1-badge{
+    width:44px; height:44px; border-radius:12px;
+    background:var(--ink); color:var(--white);
+    border:2.5px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Poppins',sans-serif; font-weight:800; font-size:15px;
+    box-shadow:0 6px 12px -4px rgba(17,17,17,0.35);
+  }
+  .m1-label{ font-family:'Poppins',sans-serif; font-weight:800; font-size:16px; color:var(--ink); }
+  .m1-label span{ color:var(--gray); }
+
+  .meta-row{
+    display:flex; align-items:center; justify-content:space-between;
+    margin-bottom:18px; gap:10px; flex-wrap:wrap;
+  }
+  .q-count{
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13px;
+    letter-spacing:0.04em; color:var(--ink); text-transform:uppercase;
+  }
+  .pill-badge{
+    font-family:'Inter',sans-serif; font-weight:800; font-size:13px;
+    color:var(--ink); background:var(--white);
+    border:2.5px solid var(--ink);
+    padding:8px 16px; border-radius:999px;
+    white-space:nowrap; font-variant-numeric:tabular-nums;
+  }
+  .progress-mini{
+    height:8px; background:var(--gray-soft); border-radius:99px; overflow:hidden; margin-bottom:20px;
+  }
+  .progress-mini > div{ height:100%; width:0%; background:var(--ink); transition:width .4s ease; }
+
+  /* ---------- Screens ---------- */
+  .screen{ display:none; }
+  .screen.active{ display:block; animation:fadeUp .45s ease both; }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:translateY(0); } }
+
+  /* ---------- WELCOME ---------- */
+  .welcome{ text-align:center; padding:36px 18px 10px; }
+  .eyebrow-pill{
+    display:inline-flex; align-items:center; gap:7px;
+    background:var(--ink); color:var(--white);
+    font-family:'Inter',sans-serif; font-weight:700; font-size:12px;
+    letter-spacing:0.1em; text-transform:uppercase;
+    padding:9px 18px; border-radius:999px; margin-bottom:26px;
+  }
+  h1.title{
+    position:relative; display:inline-block;
+    font-family:'Poppins',sans-serif; font-weight:900;
+    font-size:clamp(34px,8.6vw,58px);
+    text-transform:uppercase; color:var(--ink);
+    letter-spacing:-0.01em; line-height:1.05; margin-bottom:22px;
+  }
+  h1.title::after{
+    content:""; position:absolute; left:2%; right:2%; bottom:-8px;
+    height:15px; background:var(--gray-soft); border-radius:8px; z-index:-1;
+  }
+  p.lead{ font-size:17px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+  p.sub-lead{ font-size:14px; color:var(--gray); margin-bottom:34px; }
+
+  .preview-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:32px; }
+  .chip-preview{
+    position:relative;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:15px;
+    background:var(--white); color:var(--ink);
+    border:2.5px solid var(--ink); border-radius:14px; padding:13px 20px;
+  }
+  .chip-preview::before{
+    content:""; position:absolute; left:18px; bottom:-9px;
+    border-left:8px solid transparent; border-right:8px solid transparent; border-top:8px solid var(--ink);
+  }
+  .chip-preview::after{
+    content:""; position:absolute; left:20px; bottom:-6px;
+    border-left:6px solid transparent; border-right:6px solid transparent; border-top:6px solid var(--white);
+  }
+
+  .info-box{
+    text-align:left; background:var(--gray-soft); border:2.5px dashed var(--gray);
+    border-radius:var(--r-md); padding:18px 20px; margin:0 0 34px;
+    font-size:13.5px; color:var(--ink); line-height:1.55;
+  }
+  .info-box strong{ color:var(--ink); }
+
+  .btn{
+    font-family:'Inter',sans-serif; font-weight:700; font-size:15px;
+    border-radius:999px; padding:17px 32px; cursor:pointer;
+    display:inline-flex; align-items:center; justify-content:center; gap:9px;
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    border:none;
+  }
+  .btn:focus-visible{ outline:3px solid var(--gray); outline-offset:3px; }
+  .btn-primary{
+    background:var(--ink); color:var(--white);
+    border:3px solid var(--ink); box-shadow:4px 5px 0 var(--gray);
+    width:100%; max-width:340px;
+  }
+  .btn-primary:hover{ transform:translate(-2px,-2px); box-shadow:6px 7px 0 var(--gray); }
+  .btn-primary:active{ transform:translate(1px,2px); box-shadow:2px 2px 0 var(--gray); }
+
+  .btn-sm{
+    font-size:13px; padding:10px 18px; border-radius:999px;
+    background:var(--white); color:var(--ink);
+    border:2.5px solid var(--ink); box-shadow:2.5px 3px 0 rgba(17,17,17,0.18);
+    cursor:pointer; font-family:'Inter',sans-serif; font-weight:700;
+  }
+  .btn-sm:hover{ transform:translate(-1px,-1px); box-shadow:3.5px 4px 0 rgba(17,17,17,0.18); }
+  .btn-sm:active{ transform:translate(1px,1px); box-shadow:1px 1px 0 rgba(17,17,17,0.18); }
+  .btn-sm.recording{ background:var(--ink); color:var(--white); border-color:var(--ink); animation:pulseRec 1s ease-in-out infinite; }
+  @keyframes pulseRec{ 0%,100%{ box-shadow:2.5px 3px 0 rgba(17,17,17,0.18);} 50%{ box-shadow:2.5px 3px 0 rgba(17,17,17,0.18), 0 0 0 6px rgba(110,110,110,0.35);} }
+
+  /* ---------- FLASHCARD ---------- */
+  .card{
+    background:var(--white); border:3px solid var(--ink); border-radius:var(--r-lg);
+    box-shadow:9px 10px 0 var(--gray-soft); padding:26px 26px 28px; margin-bottom:20px;
+  }
+  .card-label{
+    font-family:'Inter',sans-serif; font-weight:800; font-size:14px;
+    letter-spacing:0.04em; text-transform:uppercase; color:var(--ink); margin-bottom:6px;
+  }
+  .card-sub{ font-size:14px; color:var(--gray); margin-bottom:20px; }
+
+  .flip-scene{ perspective:1100px; margin-bottom:18px; }
+  .flip-card{
+    display:grid; transform-style:preserve-3d;
+    transition:transform .6s cubic-bezier(.22,1,.36,1);
+  }
+  .flip-card.flipped{ transform:rotateY(180deg); }
+  .face{
+    grid-area:1/1;
+    backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    background:var(--white);
+    border:3px solid var(--ink); border-radius:var(--r-md);
+    padding:16px 16px 20px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;
+    box-shadow:6px 7px 0 var(--gray-soft);
+  }
+  .face-back{ transform:rotateY(180deg); background:var(--white); pointer-events:none; }
+  .flip-card.flipped .face-back{ pointer-events:auto; }
+  .flip-card.flipped .face-front{ pointer-events:none; }
+  .face-front{ cursor:pointer; }
+
+  .photo-frame{
+    position:relative; width:100%; aspect-ratio:16/10; max-height:250px;
+    background:var(--gray-soft); border:2.5px solid var(--ink); border-radius:12px; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; margin-bottom:16px;
+  }
+  .photo-frame.small{ aspect-ratio:16/7; max-height:130px; }
+  .photo-frame img{ width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity .35s ease; }
+  .img-loading{
+    position:absolute; font-family:'Inter',sans-serif; font-size:12.5px;
+    font-weight:700; color:var(--gray); letter-spacing:0.03em;
+  }
+
+  .sentence-text{
+    font-family:'Poppins',sans-serif; font-weight:700; font-size:19px;
+    color:var(--ink); line-height:1.55;
+  }
+  .sentence-text .gap{
+    display:inline-block; min-width:90px; border-bottom:3px solid var(--ink); margin:0 4px;
+  }
+  .sentence-text .chosen-word{
+    display:inline-block; text-transform:uppercase;
+    text-decoration:underline; text-decoration-thickness:3px; text-underline-offset:4px;
+    background:var(--gray-soft); border-radius:8px; padding:1px 8px; margin:0 2px;
+  }
+  .flip-hint{ font-size:12.5px; font-weight:700; color:var(--gray); letter-spacing:0.04em; text-transform:uppercase; margin-top:14px; }
+
+  .answer-chip{
+    display:inline-block; background:var(--ink); color:var(--white);
+    font-family:'Poppins',sans-serif; font-weight:900; font-size:26px; letter-spacing:0.04em;
+    text-transform:uppercase; padding:6px 24px; border-radius:14px; margin-bottom:14px;
+    box-shadow:3px 4px 0 var(--gray-soft);
+  }
+  .tip-box{
+    margin-top:14px; width:100%; text-align:left;
+    background:var(--gray-soft); border:2px dashed var(--gray); border-radius:12px;
+    padding:10px 14px; font-size:13px; line-height:1.5; color:var(--ink);
+  }
+
+  .btn-listen{
+    background:var(--ink); color:var(--white);
+    border:none; border-radius:999px;
+    font-family:'Inter',sans-serif; font-weight:700; font-size:13.5px;
+    padding:11px 22px; cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px; margin-top:14px;
+    box-shadow:3px 4px 0 var(--gray-soft); transition:transform .15s ease;
+  }
+  .btn-listen:hover{ transform:translate(-2px,-2px); }
+  .btn-listen:active{ transform:translate(1px,2px); }
+  .btn-listen svg{ width:16px; height:16px; }
+  .btn-listen.speaking{ animation:speakPulse .7s ease-in-out infinite; }
+  @keyframes speakPulse{ 0%,100%{ opacity:1;} 50%{ opacity:.6;} }
+
+  .controls{ display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .mark-row{ display:none; gap:12px; width:100%; }
+  .mark-row.show{ display:flex; animation:popIn .3s ease both; }
+  .btn-answer{
+    flex:1; display:flex; align-items:center; justify-content:center; gap:8px;
+    font-family:'Inter',sans-serif; font-weight:800; font-size:14.5px; letter-spacing:0.03em;
+    background:var(--white); color:var(--ink);
+    border:2.5px solid var(--ink); border-radius:14px; padding:15px 14px; cursor:pointer;
+    box-shadow:3px 4px 0 var(--gray-soft);
+    transition:transform .15s ease, background .15s ease, color .15s ease;
+  }
+  .btn-answer svg{ width:18px; height:18px; flex-shrink:0; }
+  .btn-answer:hover:not(:disabled){ transform:translate(-2px,-2px); box-shadow:5px 6px 0 var(--gray-soft); }
+  .btn-answer:active:not(:disabled){ transform:translate(1px,2px); }
+  .btn-answer:disabled{ cursor:not-allowed; box-shadow:none; }
+  .btn-answer.picked{ background:var(--ink); color:var(--white); }
+  .btn-answer:disabled:not(.picked){ opacity:.5; }
+
+  .feedback-toast{
+    display:none; align-items:center; gap:10px; width:100%;
+    font-family:'Inter',sans-serif; font-weight:800; font-size:14px;
+    padding:12px 18px; border-radius:var(--r-md); border:2.5px solid var(--ink);
+  }
+  .feedback-toast.show{ display:flex; animation:popIn .3s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes popIn{ from{ opacity:0; transform:scale(.92) translateY(-4px);} to{ opacity:1; transform:scale(1) translateY(0);} }
+  .feedback-toast.correct{ background:var(--ink); color:var(--white); box-shadow:3px 4px 0 var(--gray-soft); }
+  .feedback-toast.incorrect{ background:var(--white); color:var(--ink); box-shadow:3px 4px 0 var(--gray-soft); }
+  .feedback-toast svg{ width:18px; height:18px; flex-shrink:0; }
+
+  /* ---------- RECORD YOUR VOICE ---------- */
+  .record-panel{
+    display:none; margin-top:6px; width:100%;
+    background:var(--gray-soft); border:2.5px dashed var(--gray); border-radius:var(--r-md);
+    padding:16px 16px 14px; text-align:left;
+  }
+  .record-panel.show{ display:block; animation:popIn .3s ease both; }
+  .record-title{
+    font-family:'Inter',sans-serif; font-weight:800; font-size:12.5px;
+    letter-spacing:0.05em; text-transform:uppercase; color:var(--ink); margin-bottom:6px;
+  }
+  .record-desc{ font-size:13px; color:var(--gray); margin-bottom:12px; line-height:1.5; }
+  .record-controls{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+  .record-status{ font-size:12.5px; font-weight:700; color:var(--ink); }
+  .record-audio{ margin-top:12px; width:100%; }
+  .record-note{ font-size:12px; color:var(--gray); margin-top:10px; font-style:italic; }
+
+  /* ---------- FINAL ---------- */
+  .final-card{ text-align:center; padding:48px 32px 40px; }
+  .trophy-wrap{
+    width:88px; height:88px; margin:0 auto 22px;
+    background:var(--ink); border-radius:22px; border:3px solid var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:4px 5px 0 var(--gray-soft); transform:rotate(-4deg);
+    animation:trophyPop .6s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes trophyPop{ 0%{ transform:scale(0) rotate(-24deg);} 100%{ transform:scale(1) rotate(-4deg);} }
+  .trophy-wrap svg{ width:42px; height:42px; }
+  h2.final-title{ font-family:'Poppins',sans-serif; font-weight:900; text-transform:uppercase; font-size:28px; margin-bottom:8px; }
+  p.final-sub{ color:var(--gray); font-size:14.5px; margin-bottom:28px; }
+  .score-display{
+    display:inline-flex; align-items:baseline; gap:6px;
+    font-family:'Poppins',sans-serif; font-weight:900; font-size:50px; color:var(--ink); margin-bottom:4px;
+  }
+  .score-display span.of{ font-size:22px; color:var(--gray); font-weight:700; }
+  .score-label{
+    font-family:'Inter',sans-serif; font-weight:800; font-size:12px; letter-spacing:0.1em;
+    text-transform:uppercase; color:var(--gray); margin-bottom:22px;
+  }
+  .progress-track{
+    height:12px; background:var(--gray-soft); border:2px solid var(--ink);
+    border-radius:99px; overflow:hidden; margin-bottom:26px;
+  }
+  .progress-fill{ height:100%; width:0%; background:var(--ink); transition:width 1s cubic-bezier(.22,1,.36,1); }
+  .review-box{
+    display:none; text-align:left; background:var(--gray-soft); border:2.5px dashed var(--gray);
+    border-radius:var(--r-md); padding:16px 18px; margin-bottom:26px; font-size:13.5px; line-height:1.5;
+  }
+  .review-box.show{ display:block; }
+  .review-box h3{ font-family:'Inter',sans-serif; font-size:12.5px; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; margin-bottom:8px; }
+  .review-box li{ margin-left:18px; margin-bottom:6px; }
+  .final-btn-row{ display:flex; flex-direction:column; gap:12px; align-items:center; }
+  .final-btn-row .btn{ width:100%; max-width:340px; }
+
+  @media (max-width:480px){
+    .card{ padding:18px 14px 22px; }
+    .final-card{ padding:40px 20px 34px; }
+    .welcome{ padding:26px 10px 6px; }
+    .sentence-text{ font-size:17px; }
+    .mark-row{ flex-direction:column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-blob b1" aria-hidden="true"></div>
+<div class="bg-blob b2" aria-hidden="true"></div>
+
+<audio id="tts-audio" preload="none" style="display:none;"></audio>
+
+<div class="stage">
+
+  <div class="header-row">
+    <div class="m1-badge">B1</div>
+    <div class="m1-label">INTERMEDIATE <span>B1</span></div>
+  </div>
+
+  <!-- ============ WELCOME SCREEN ============ -->
+  <section class="screen active" id="screen-welcome">
+    <div class="welcome">
+      <div class="eyebrow-pill">✦ Flashcards</div>
+      <h1 class="title">For or Since?</h1>
+      <p class="lead">Read the sentence, think of the missing word, then flip the card to check.</p>
+      <p class="sub-lead">Present perfect flashcards with real photos and natural American English audio.</p>
+
+      <div class="preview-row" aria-hidden="true">
+        <div class="chip-preview">FOR</div>
+        <div class="chip-preview">SINCE</div>
+      </div>
+
+      <div class="info-box">
+        <strong>Instructions:</strong> each flashcard shows a real photo and a sentence with a blank. Decide whether the missing word is <strong>for</strong> (a period of time, like <em>ten years</em>) or <strong>since</strong> (a starting point in time, like <em>Friday</em>). Press <strong>“Flip card”</strong> to see the answer and hear the full sentence read aloud. Then mark <strong>“I got it”</strong> or <strong>“Not yet”</strong> honestly. You can also use the <strong>microphone</strong> button to record yourself saying the sentence. Try to finish all 15 cards in the shortest time!
+      </div>
+
+      <button class="btn btn-primary" id="btn-start">
+        START FLASHCARDS
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ ACTIVITY SCREEN ============ -->
+  <section class="screen" id="screen-activity">
+    <div class="meta-row">
+      <div class="pill-badge">⏱ <span id="timer-value">0:00</span></div>
+      <div class="q-count" id="q-count">CARD 1 OF 15</div>
+      <div class="pill-badge">✓ <span id="score-value">0</span></div>
+    </div>
+    <div class="progress-mini"><div id="progress-mini-fill"></div></div>
+
+    <div class="card">
+      <div class="card-label">Present perfect: for / since</div>
+      <div class="card-sub">Think of the missing word, then flip the card.</div>
+
+      <div class="flip-scene">
+        <div class="flip-card" id="flip-card">
+
+          <!-- FRONT -->
+          <div class="face face-front" id="face-front">
+            <div class="photo-frame">
+              <div class="img-loading" id="img-loading">Loading photo…</div>
+              <img id="photo-front" alt="" />
+            </div>
+            <div class="sentence-text" id="sentence-front"></div>
+            <div class="flip-hint">for or since?</div>
+          </div>
+
+          <!-- BACK -->
+          <div class="face face-back" id="face-back">
+            <div class="photo-frame small"><img id="photo-back" alt="" /></div>
+            <div class="answer-chip" id="answer-chip">since</div>
+            <div class="sentence-text" id="sentence-back"></div>
+            <div class="tip-box" id="tip-box"></div>
+            <button class="btn-listen" id="btn-listen" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+              <span id="listen-label">LISTEN</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-primary" id="btn-flip" type="button">
+          FLIP CARD
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>
+        </button>
+
+        <div class="mark-row" id="mark-row">
+          <button class="btn-answer" id="btn-right" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            I GOT IT
+          </button>
+          <button class="btn-answer" id="btn-wrong" type="button">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            NOT YET
+          </button>
+        </div>
+
+        <div class="feedback-toast" id="feedback-toast"></div>
+
+        <div class="record-panel" id="record-panel">
+          <div class="record-title">🎤 Practice your pronunciation</div>
+          <div class="record-desc">Say the full sentence out loud: <strong id="record-sentence">—</strong> Record yourself, then listen back.</div>
+          <div class="record-controls">
+            <button class="btn-sm" id="btn-record" type="button">● Record my voice</button>
+            <span class="record-status" id="record-status"></span>
+          </div>
+          <audio class="record-audio" id="record-audio" controls style="display:none;"></audio>
+          <div class="record-note" id="record-note"></div>
+        </div>
+
+        <button class="btn btn-primary" id="btn-next" type="button" style="display:none;">NEXT CARD
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL SCREEN ============ -->
+  <section class="screen" id="screen-final">
+    <div class="card final-card">
+      <div class="trophy-wrap">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M8 21h8M12 17v4M7 4h10v4a5 5 0 01-10 0V4z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M7 5H4a1 1 0 00-1 1v1a4 4 0 004 4M17 5h3a1 1 0 011 1v1a4 4 0 01-4 4" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2 class="final-title">Well done!</h2>
+      <p class="final-sub">You went through all the For or Since flashcards.</p>
+
+      <div class="score-display"><span id="final-score">0</span><span class="of">/ 15</span></div>
+      <div class="score-label">Cards you got right · Time <span id="final-time">0:00</span></div>
+
+      <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+
+      <div class="review-box" id="review-box">
+        <h3>Review these sentences</h3>
+        <ul id="review-list"></ul>
+      </div>
+
+      <div class="final-btn-row">
+        <button class="btn btn-primary" id="btn-retry">TRY AGAIN</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function(){
+
+  const P = id => "https://images.pexels.com/photos/" + id + "/pexels-photo-" + id + ".jpeg?auto=compress&cs=tinysrgb&h=627&fit=crop&w=1200";
+
+  // Each card: text before/after the blank, the correct word, the time
+  // expression (for the tip), a real photo, an alt text, and the voice gender
+  // (matched to the person in the photo / subject of the sentence).
+  const CARDS = [
+    { before:"I haven't had this much time", after:"I was a kid.", answer:"since", expr:"I was a kid",
+      img:P(7903175), alt:"A woman relaxing in a hammock with a book", voice:'F' },
+    { before:"Jane is away. She's been away", after:"Friday.", answer:"since", expr:"Friday",
+      img:P(5622645), alt:"A happy woman holding her luggage", voice:'F' },
+    { before:"He has lived in Chicago", after:"ten years.", answer:"for", expr:"ten years",
+      img:P(18628703), alt:"A man looking at the city from a rooftop", voice:'M' },
+    { before:"My grandparents have been married", after:"fifty years.", answer:"for", expr:"fifty years",
+      img:P(8796059), alt:"An elderly couple sitting on a bench", voice:'F' },
+    { before:"She has worked at the hospital", after:"three years.", answer:"for", expr:"three years",
+      img:P(6129142), alt:"A nurse smiling at a hospital", voice:'F' },
+    { before:"We have been best friends", after:"high school.", answer:"since", expr:"high school",
+      img:P(5047084), alt:"Two women friends smiling and hugging", voice:'F' },
+    { before:"He hasn't eaten anything", after:"breakfast.", answer:"since", expr:"breakfast",
+      img:P(10379533), alt:"A man looking into the refrigerator", voice:'M' },
+    { before:"The kids have been playing outside", after:"two hours.", answer:"for", expr:"two hours",
+      img:P(8033858), alt:"Kids playing at the park", voice:'F' },
+    { before:"I've been learning to play the guitar", after:"last summer.", answer:"since", expr:"last summer",
+      img:P(5045942), alt:"A man playing an acoustic guitar", voice:'M' },
+    { before:"She has been studying English", after:"six months.", answer:"for", expr:"six months",
+      img:P(8199250), alt:"A student typing on her laptop", voice:'F' },
+    { before:"It hasn't rained here", after:"March.", answer:"since", expr:"March",
+      img:P(96865), alt:"Dry, cracked ground during a drought", voice:'M' },
+    { before:"My dad has been retired", after:"he turned sixty-five.", answer:"since", expr:"he turned sixty-five",
+      img:P(7935678), alt:"A smiling elderly man in a gray sweater", voice:'M' },
+    { before:"We have been waiting for the bus", after:"forty minutes.", answer:"for", expr:"forty minutes",
+      img:P(19143071), alt:"People waiting at the bus station", voice:'F' },
+    { before:"He has been running every morning", after:"January.", answer:"since", expr:"January",
+      img:P(11962009), alt:"A man running near city buildings", voice:'M' },
+    { before:"We haven't visited our grandparents", after:"two years.", answer:"for", expr:"two years",
+      img:P(8317710), alt:"A happy elderly couple hugging their grandchild", voice:'F' }
+  ];
+  const TOTAL = CARDS.length;
+
+  let current = 0, score = 0, flipped = false, marked = false;
+  let missed = [];
+  let timerInterval = null, elapsed = 0;
+  let mediaRecorder = null, recordedChunks = [], isRecording = false, micStream = null;
+
+  const $ = id => document.getElementById(id);
+  const screens = { welcome:$('screen-welcome'), activity:$('screen-activity'), final:$('screen-final') };
+  const flipCard = $('flip-card');
+  const btnFlip = $('btn-flip'), markRow = $('mark-row'), btnRight = $('btn-right'), btnWrong = $('btn-wrong');
+  const btnNext = $('btn-next'), btnStart = $('btn-start'), btnRetry = $('btn-retry');
+  const toast = $('feedback-toast');
+  const btnListen = $('btn-listen'), listenLabel = $('listen-label');
+  const recordPanel = $('record-panel'), recordSentence = $('record-sentence'), btnRecord = $('btn-record');
+  const recordStatus = $('record-status'), recordAudio = $('record-audio'), recordNote = $('record-note');
+
+  function fullSentence(c){ return c.before + ' ' + c.answer + ' ' + c.after; }
+  function fmt(sec){ return Math.floor(sec/60) + ':' + String(sec % 60).padStart(2,'0'); }
+
+  /* ---------------- Timer ---------------- */
+  function stopTimer(){ if(timerInterval){ clearInterval(timerInterval); timerInterval = null; } }
+  function startTimer(){
+    stopTimer(); elapsed = 0; $('timer-value').textContent = fmt(0);
+    timerInterval = setInterval(()=>{ elapsed++; $('timer-value').textContent = fmt(elapsed); }, 1000);
+  }
+
+  /* ---------------- Natural human-voice pronunciation (male + female) ----------------
+     Three tiers, tried in order every single time (never a permanent sticky
+     disable after one hiccup, so a single dropped connection never locks the
+     whole activity into robotic audio):
+     1) A free built-in cloud-quality OS voice (Microsoft Edge "Online (Natural)",
+        Google US English, Samantha) when the browser already has one installed.
+     2) A recorded-quality neural voice (Amazon Polly, via a free public relay).
+     3) The browser's best built-in voice of the matching gender, only used if
+        neither of the above is available or reachable.
+     The voice gender always matches the person in each photo. */
+  const ttsAudio = $('tts-audio');
+  const NEURAL_VOICES = { M: ["Matthew", "Joey"], F: ["Joanna", "Kendra", "Salli"] };
+  let consecutiveFailures = 0;
+
+  function pickNeuralVoice(gender, index){
+    const list = NEURAL_VOICES[gender] || NEURAL_VOICES.F;
+    return list[index % list.length];
+  }
+
+  let cachedVoices = [];
+  function refreshVoices(){ if('speechSynthesis' in window){ cachedVoices = window.speechSynthesis.getVoices(); } }
+  if('speechSynthesis' in window){ refreshVoices(); window.speechSynthesis.onvoiceschanged = refreshVoices; }
+
+  function pickFallbackVoice(gender){
+    if(!cachedVoices.length) return null;
+    const femaleNames = [/Samantha/i, /Zira/i, /Female/i, /Joanna/i, /Aria/i, /Jenny/i, /Victoria/i];
+    const maleNames   = [/Daniel/i, /David/i, /Alex/i, /Male/i, /Guy/i, /Fred/i, /Matthew/i];
+    const priorityNames = gender === 'M' ? maleNames : femaleNames;
+    for(const rx of priorityNames){
+      const v = cachedVoices.find(v => rx.test(v.name) && v.lang.startsWith('en'));
+      if(v) return v;
+    }
+    const enUS = cachedVoices.find(v => v.lang === 'en-US');
+    if(enUS) return enUS;
+    const anyEn = cachedVoices.find(v => v.lang && v.lang.startsWith('en'));
+    return anyEn || cachedVoices[0];
+  }
+
+  function pickPremiumVoice(gender){
+    if(!cachedVoices.length) return null;
+    const femaleNames = [ /Microsoft (Aria|Jenny|Michelle|Ana) Online \(Natural\)/i, /Google US English/i, /Samantha/i ];
+    const maleNames = [ /Microsoft (Guy|Davis|Andrew|Christopher|Eric|Brian) Online \(Natural\)/i, /Google UK English Male/i, /Alex/i ];
+    const priorityNames = gender === 'M' ? maleNames : femaleNames;
+    for(const rx of priorityNames){
+      const v = cachedVoices.find(v => rx.test(v.name) && v.lang && v.lang.startsWith('en'));
+      if(v) return v;
+    }
+    return null;
+  }
+
+  function speakWithVoice(text, voice, onEnd){
+    if(!('speechSynthesis' in window)){ if(onEnd) onEnd(); return; }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US'; utter.voice = voice;
+    utter.rate = 0.94; utter.pitch = 1.0; utter.volume = 1;
+    utter.onend = function(){ if(onEnd) onEnd(); };
+    utter.onerror = function(){ if(onEnd) onEnd(); };
+    window.speechSynthesis.speak(utter);
+  }
+
+  function fallbackSpeak(text, gender, onEnd){
+    if(!('speechSynthesis' in window)){ if(onEnd) onEnd(); return; }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    const v = pickFallbackVoice(gender);
+    if(v) utter.voice = v;
+    utter.rate = 0.9; utter.pitch = gender === 'M' ? 0.95 : 1.05; utter.volume = 1;
+    utter.onend = function(){ if(onEnd) onEnd(); };
+    utter.onerror = function(){ if(onEnd) onEnd(); };
+    window.speechSynthesis.speak(utter);
+  }
+
+  function attemptNeural(text, gender, voiceIndex, attempt, onSuccess, onFail){
+    const voiceName = pickNeuralVoice(gender, voiceIndex + attempt);
+    const url = 'https://api.streamelements.com/kappa/v2/speech?voice=' + voiceName + '&text=' + encodeURIComponent(text);
+    let settled = false;
+    const timeoutMs = consecutiveFailures >= 2 ? 4000 : 7000;
+    const safety = setTimeout(function(){
+      if(!settled){ settled = true; try{ ttsAudio.pause(); }catch(e){} onFail(); }
+    }, timeoutMs);
+    ttsAudio.onended = function(){ if(settled) return; settled = true; clearTimeout(safety); consecutiveFailures = 0; onSuccess(); };
+    ttsAudio.onerror = function(){ if(settled) return; settled = true; clearTimeout(safety); onFail(); };
+    try{
+      ttsAudio.src = url;
+      const p = ttsAudio.play();
+      if(p && p.catch){ p.catch(function(){ if(settled) return; settled = true; clearTimeout(safety); onFail(); }); }
+    }catch(e){
+      if(!settled){ settled = true; clearTimeout(safety); onFail(); }
+    }
+  }
+
+  function speakPhrase(text, gender, onEnd){
+    let finished = false;
+    const finish = function(){ if(!finished){ finished = true; if(onEnd) onEnd(); } };
+    const premium = pickPremiumVoice(gender);
+    if(premium){ speakWithVoice(text, premium, finish); return; }
+    attemptNeural(text, gender, 0, 0, finish, function(){
+      attemptNeural(text, gender, 0, 1, finish, function(){
+        consecutiveFailures++;
+        fallbackSpeak(text, gender, finish);
+      });
+    });
+  }
+
+  function listen(){
+    if(btnListen.disabled) return;
+    const c = CARDS[current];
+    btnListen.classList.add('speaking');
+    btnListen.disabled = true;
+    listenLabel.textContent = 'PLAYING…';
+    speakPhrase(fullSentence(c), c.voice, function(){
+      btnListen.classList.remove('speaking');
+      btnListen.disabled = false;
+      listenLabel.textContent = 'LISTEN';
+    });
+  }
+  btnListen.addEventListener('click', listen);
+
+  /* ---------------- Voice recording (student practice) ---------------- */
+  function stopMicStream(){ if(micStream){ micStream.getTracks().forEach(t => t.stop()); micStream = null; } }
+
+  async function startRecording(){
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || typeof MediaRecorder === 'undefined'){
+      recordNote.textContent = 'Your browser does not allow audio recording here. You can still practice out loud.';
+      return;
+    }
+    try{
+      micStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+      recordedChunks = [];
+      mediaRecorder = new MediaRecorder(micStream);
+      mediaRecorder.ondataavailable = function(e){ if(e.data && e.data.size > 0) recordedChunks.push(e.data); };
+      mediaRecorder.onstop = function(){
+        const blob = new Blob(recordedChunks, { type:'audio/webm' });
+        recordAudio.src = URL.createObjectURL(blob);
+        recordAudio.style.display = 'block';
+        recordStatus.textContent = '✓ Recording ready. Press play to listen to yourself.';
+        stopMicStream();
+      };
+      mediaRecorder.start();
+      isRecording = true;
+      btnRecord.textContent = '■ Stop recording';
+      btnRecord.classList.add('recording');
+      recordStatus.textContent = 'Recording… speak now.';
+      recordNote.textContent = '';
+    }catch(err){
+      recordNote.textContent = 'We could not access your microphone. Please check your browser permissions and try again.';
+    }
+  }
+  function stopRecording(){
+    if(mediaRecorder && isRecording){ mediaRecorder.stop(); }
+    isRecording = false;
+    btnRecord.textContent = '● Record my voice';
+    btnRecord.classList.remove('recording');
+  }
+  btnRecord.addEventListener('click', function(){ if(isRecording){ stopRecording(); } else { startRecording(); } });
+
+  function resetRecordPanel(){
+    recordPanel.classList.remove('show');
+    recordAudio.style.display = 'none';
+    recordAudio.removeAttribute('src');
+    recordStatus.textContent = '';
+    recordNote.textContent = '';
+    btnRecord.textContent = '● Record my voice';
+    btnRecord.classList.remove('recording');
+    isRecording = false;
+    if(mediaRecorder && mediaRecorder.state !== 'inactive'){ try{ mediaRecorder.stop(); }catch(e){} }
+    stopMicStream();
+  }
+
+  /* ---------------- Photos ---------------- */
+  function loadPhotos(c){
+    const front = $('photo-front'), back = $('photo-back'), loading = $('img-loading');
+    loading.style.display = 'block'; loading.textContent = 'Loading photo…';
+    front.style.opacity = '0'; back.style.opacity = '0';
+    front.onload = function(){ loading.style.display = 'none'; front.style.opacity = '1'; };
+    front.onerror = function(){ loading.textContent = 'Photo could not be loaded.'; };
+    back.onload = function(){ back.style.opacity = '1'; };
+    front.alt = c.alt; back.alt = c.alt;
+    front.src = c.img; back.src = c.img;
+  }
+
+  /* ---------------- Flashcard logic ---------------- */
+  function renderCard(){
+    const c = CARDS[current];
+    flipped = false; marked = false;
+    flipCard.classList.remove('flipped');
+    $('q-count').textContent = 'CARD ' + (current + 1) + ' OF ' + TOTAL;
+    $('progress-mini-fill').style.width = (current / TOTAL * 100) + '%';
+
+    $('sentence-front').innerHTML = c.before + ' <span class="gap"></span> ' + c.after;
+    $('sentence-back').innerHTML = c.before + ' <span class="chosen-word">' + c.answer + '</span> ' + c.after;
+    $('answer-chip').textContent = c.answer;
+    $('tip-box').innerHTML = c.answer === 'for'
+      ? '<strong>for</strong> + a <em>period of time</em> (how long): <em>' + c.expr + '</em>.'
+      : '<strong>since</strong> + a <em>starting point</em> (when it began): <em>' + c.expr + '</em>.';
+
+    btnFlip.style.display = 'inline-flex';
+    markRow.classList.remove('show');
+    btnRight.disabled = false; btnWrong.disabled = false;
+    btnRight.classList.remove('picked'); btnWrong.classList.remove('picked');
+    toast.className = 'feedback-toast'; toast.innerHTML = '';
+    btnNext.style.display = 'none';
+    resetRecordPanel();
+    loadPhotos(c);
+  }
+
+  function doFlip(){
+    if(flipped) return;
+    flipped = true;
+    flipCard.classList.add('flipped');
+    btnFlip.style.display = 'none';
+    markRow.classList.add('show');
+    listen(); // read the full sentence aloud, in the voice that matches the photo
+  }
+  btnFlip.addEventListener('click', doFlip);
+  $('face-front').addEventListener('click', doFlip);
+
+  function mark(gotIt){
+    if(!flipped || marked) return;
+    marked = true;
+    btnRight.disabled = true; btnWrong.disabled = true;
+    (gotIt ? btnRight : btnWrong).classList.add('picked');
+
+    toast.className = 'feedback-toast show ' + (gotIt ? 'correct' : 'incorrect');
+    toast.innerHTML = gotIt
+      ? '<svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Great job! Keep going.'
+      : '<svg viewBox="0 0 24 24" fill="none"><path d="M12 9v4M12 16.5h.01M12 3l9 16H3L12 3z" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> No problem — you will see it again in the review.';
+
+    if(gotIt){ score++; $('score-value').textContent = score; }
+    else { missed.push(current); }
+
+    recordSentence.textContent = fullSentence(CARDS[current]).replace(/^./, ch => ch.toUpperCase());
+    recordPanel.classList.add('show');
+    btnNext.style.display = 'inline-flex';
+    btnNext.firstChild.textContent = (current === TOTAL - 1) ? 'SEE RESULTS ' : 'NEXT CARD ';
+  }
+  btnRight.addEventListener('click', () => mark(true));
+  btnWrong.addEventListener('click', () => mark(false));
+
+  btnNext.addEventListener('click', function(){
+    current++;
+    if(current < TOTAL){ renderCard(); } else { showFinal(); }
+  });
+
+  function showFinal(){
+    stopTimer();
+    if('speechSynthesis' in window){ window.speechSynthesis.cancel(); }
+    screens.activity.classList.remove('active');
+    screens.final.classList.add('active');
+    $('final-score').textContent = score;
+    $('final-time').textContent = fmt(elapsed);
+
+    const list = $('review-list'); list.innerHTML = '';
+    missed.forEach(i => {
+      const li = document.createElement('li');
+      const c = CARDS[i];
+      li.innerHTML = c.before + ' <strong>' + c.answer + '</strong> ' + c.after;
+      list.appendChild(li);
+    });
+    $('review-box').classList.toggle('show', missed.length > 0);
+
+    $('progress-fill').style.width = '0%';
+    const pct = Math.round(score / TOTAL * 100);
+    setTimeout(()=>{ $('progress-fill').style.width = pct + '%'; }, 150);
+  }
+
+  function startGame(){
+    current = 0; score = 0; missed = [];
+    $('score-value').textContent = '0';
+    screens.welcome.classList.remove('active');
+    screens.final.classList.remove('active');
+    screens.activity.classList.add('active');
+    renderCard();
+    startTimer();
+  }
+  btnStart.addEventListener('click', startGame);
+  btnRetry.addEventListener('click', startGame);
+
+})();
+</script>
+
+</body>
+</html>
